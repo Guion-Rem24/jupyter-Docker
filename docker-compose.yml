@@ -1,0 +1,19 @@
+version: '3'
+services:
+    ubuntu:
+        build:
+            context: .
+            dockerfile: ./build/Dockerfile
+        image: ubuntu1604
+        runtime: nvidia
+        environment:
+            - JUPYTER_ENABLE_LAB=yes
+            - NVIDIA_VISIBLE_DEVICES=all
+        volumes:
+            # - "/usr/local/cuda:/usr/local/cuda"
+            - "./sandbox:/home/mine/sandbox"
+        ports: 
+            - "8888:8888"
+        command: /bin/bash
+        tty: true
+        
