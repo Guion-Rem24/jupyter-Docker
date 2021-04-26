@@ -16,7 +16,7 @@
 
 1. リポジトリのクローン \
    `$ git clone https://github.com/Guion-Rem24/jupyter-Docker.git`
-2. .envファイルを開き、ユーザ名を入れる \
+2. .envファイルを開き、ユーザ名を入れる 
    
    ```Bash:.env
    user=hogehoge
