@@ -4,14 +4,18 @@ services:
         build:
             context: .
             dockerfile: ./build/Dockerfile
-        image: ubuntu1604
+            args: 
+                User: ${user}
+        image: tf1-py3
         runtime: nvidia
+        user: ${user}
+        working_dir: /home/${user}
         environment:
             - JUPYTER_ENABLE_LAB=yes
             - NVIDIA_VISIBLE_DEVICES=all
         volumes:
             # - "/usr/local/cuda:/usr/local/cuda"
-            - "./sandbox:/home/mine/sandbox"
+            - "./sandbox:/home/${user}/sandbox"
         ports: 
             - "8888:8888"
         command: /bin/bash
