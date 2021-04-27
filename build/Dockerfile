@@ -4,20 +4,23 @@ ENV HTTP_PROXY=http://proxy.uec.ac.jp:8080/
 ENV HTTPS_PROXY=http://proxy.uec.ac.jp:8080/ 
 
 ARG User
-
-# set Passwd if you need
-ENV JUPYTER_PASSWD=
-# change Port if you want to change
-ENV JUPYTER_PORT=8888
+ARG JUPYTER_PASSWD
+ARG JUPYTER_PORT
+ARG JUPYTER_WORK_DIR
 
 EXPOSE ${JUPYTER_PORT}
+
+ENV JUPYTER_PORT=${JUPYTER_PORT}
 
 
 USER root
 RUN echo ${User}
 RUN cat /etc/lsb-release
+
+# Comment out below RUN If not use Proxy
 RUN echo 'Acquire::http::Proxy "http://proxy.uec.ac.jp:8080";' >> /etc/apt/apt.conf\
     && echo 'Acquire::https::Proxy "http://proxy.uec.ac.jp:8080";' >> /etc/apt/apt.conf
+
 RUN echo 'export JUPYTER_PORT=${JUPYTER_PORT}' >> /root/.bashrc
 RUN echo 'export JUPYTER_PASSWD=${JUPYTER_PASSWD}' >> /root/.bashrc
 
@@ -29,6 +32,7 @@ RUN groupadd wheel
 RUN gpasswd -a ${User} wheel
 RUN gpasswd -a root wheel
 
+# Jupyter Config
 USER ${User}
 RUN pip install jupyter
 RUN jupyter notebook --generate-config
@@ -36,10 +40,15 @@ USER root
 COPY sandbox/jupyter_notebook_config.py /home/${User}/.jupyter/jupyter_notebook_config.py
 COPY sandbox/start_jupyter.sh /home/${User}
 RUN chmod +x /home/${User}/start_jupyter.sh 
+# -- write configuration into jupyter_notebook_config.py
+RUN echo '' >> /home/${User}/.jupyter/jupyter_notebook_config.py
+RUN echo 'c.NotebookApp.port = '${JUPYTER_PORT} >> /home/${User}/.jupyter/jupyter_notebook_config.py
+RUN echo 'c.NotebookApp.token = '${JUPYTER_PASSWD} >> /home/${User}/.jupyter/jupyter_notebook_config.py
+RUN echo 'c.NotebookApp.notebook_dir = '${JUPYTER_WORK_DIR} >> /home/${User}/.jupyter/jupyter_notebook_config.py
+
 
 RUN echo '%wheel    ALL=(ALL)   NOPASSWD:ALL' >> /etc/sudoers
 RUN echo 'Defaults timestamp_timeout = 0' >> /etc/sudoers
-
 
 
 # If you do not need PASSWORD, please comment out below lines ---->

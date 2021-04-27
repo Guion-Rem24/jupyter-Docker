@@ -6,6 +6,10 @@ services:
             dockerfile: ./build/Dockerfile
             args: 
                 User: ${user}
+                JUPYTER_PASSWD: ${jupyter_passwd}
+                JUPYTER_PORT: ${jupyter_port}
+                JUPYTER_WORK_DIR: /home/${user}/${jupyter_work_dir}
+
         image: tf1-py3
         runtime: nvidia
         user: ${user}
@@ -17,7 +21,7 @@ services:
             # - "/usr/local/cuda:/usr/local/cuda"
             - "./sandbox:/home/${user}/sandbox"
         ports: 
-            - "8888:8888"
+            - "8888:${jupyter_port}"
         command: /bin/bash
         tty: true
         

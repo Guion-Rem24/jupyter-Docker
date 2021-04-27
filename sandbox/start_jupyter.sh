@@ -1,2 +1,2 @@
 #!/bin/bash
-nohup jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root --NotebookApp.token='' > /dev/null 2>&1 & 
+nohup jupyter notebook > ./.jupyter/jupyter.log 2>&1 & 
