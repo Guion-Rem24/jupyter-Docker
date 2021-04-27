@@ -15,7 +15,11 @@
 ### 手順
 
 1. リポジトリのクローン \
-   `$ git clone https://github.com/Guion-Rem24/jupyter-Docker.git`
+   
+   ```Bash
+   $ git clone https://github.com/Guion-Rem24/jupyter-Docker.git
+   ```
+
 2. .envファイルを開き、ユーザ名、jupyterの設定を入力
    
    ```Bash:.env
@@ -29,11 +33,11 @@
 
 3. imageのbuild 
    
-   ```Bash:terminal
-    cd jupyter-Docker
-    docker-compose up -d
+   ```Bash
+   $ cd jupyter-Docker
+   $ docker-compose up -d
     
-    docker-compose exec ubuntu /bin/bash 
+   $ docker-compose exec ubuntu /bin/bash 
    ```
 
 ### 注意事項
