@@ -21,8 +21,6 @@ RUN cat /etc/lsb-release
 RUN echo 'Acquire::http::Proxy "http://proxy.uec.ac.jp:8080";' >> /etc/apt/apt.conf\
     && echo 'Acquire::https::Proxy "http://proxy.uec.ac.jp:8080";' >> /etc/apt/apt.conf
 
-RUN echo 'export JUPYTER_PORT=${JUPYTER_PORT}' >> /root/.bashrc
-RUN echo 'export JUPYTER_PASSWD=${JUPYTER_PASSWD}' >> /root/.bashrc
 
 RUN apt-get update && apt-get install -y && apt-get upgrade -y
 RUN useradd -m ${User}
@@ -32,6 +30,10 @@ RUN groupadd wheel
 RUN gpasswd -a ${User} wheel
 RUN gpasswd -a root wheel
 
+RUN echo 'export JUPYTER_PORT=${JUPYTER_PORT}' >> /root/.bashrc
+RUN echo 'export JUPYTER_PASSWD=${JUPYTER_PASSWD}' >> /root/.bashrc
+RUN echo 'export JUPYTER_PORT=${JUPYTER_PORT}' >> /home/${User}/.bashrc
+RUN echo 'export JUPYTER_PASSWD=${JUPYTER_PASSWD}' >> /home/${User}/.bashrc
 # Jupyter Config
 USER ${User}
 RUN pip install jupyter
@@ -43,9 +45,22 @@ RUN chmod +x /home/${User}/start_jupyter.sh
 # -- write configuration into jupyter_notebook_config.py
 RUN echo '' >> /home/${User}/.jupyter/jupyter_notebook_config.py
 RUN echo 'c.NotebookApp.port = '${JUPYTER_PORT} >> /home/${User}/.jupyter/jupyter_notebook_config.py
-RUN echo 'c.NotebookApp.token = '${JUPYTER_PASSWD} >> /home/${User}/.jupyter/jupyter_notebook_config.py
-RUN echo 'c.NotebookApp.notebook_dir = '${JUPYTER_WORK_DIR} >> /home/${User}/.jupyter/jupyter_notebook_config.py
+RUN echo -n 'c.NotebookApp.token = "' >> /home/${User}/.jupyter/jupyter_notebook_config.py
+RUN echo -n ${JUPYTER_PASSWD} >> /home/${User}/.jupyter/jupyter_notebook_config.py
+RUN echo '"' >> /home/${User}/.jupyter/jupyter_notebook_config.py
+RUN echo -n 'c.NotebookApp.notebook_dir = "' >> /home/${User}/.jupyter/jupyter_notebook_config.py
+RUN echo -n ${JUPYTER_WORK_DIR} >> /home/${User}/.jupyter/jupyter_notebook_config.py
+RUN echo '"' >> /home/${User}/.jupyter/jupyter_notebook_config.py
 
+# Kaggle API setting --->
+# USER root
+# RUN pip install kaggle
+# USER ${User}
+# RUN mkdir /home/${User}/.kaggle
+# COPY sandbox/kaggle.json /home/${User}/.kaggle/kaggle.json
+# RUN chmod 600 /home/${User}/.kaggle/kaggle.json
+# RUN kaggle config set -n proxy -v http://proxy.uec.ac.jp:8080/
+# ---> to this point
 
 RUN echo '%wheel    ALL=(ALL)   NOPASSWD:ALL' >> /etc/sudoers
 RUN echo 'Defaults timestamp_timeout = 0' >> /etc/sudoers

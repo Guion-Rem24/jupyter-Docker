@@ -83,6 +83,20 @@
    コンテナの削除
 - `docker rmi [Image ID]`\
    Imageの削除
+
+- `docker rmi $(docker images -f "dangling=true" -q)` \
+  imageのビルドの失敗/pullの失敗等により、`docker images`で出力されたimageの中に`<none>`というタグの使われないimageが存在することがあります。これを一括削除するコマンドです。\
+  なお、docker APIのバージョンが1.25以上の場合は以下のコマンドと同義です。\
+  `docker image prune` \
+  Docker APIのバージョンは以下のコマンドで確認できます。\
+  
+  ```Bash
+  $ docker version | grep -i api
+   API version:       1.41
+  API version:      1.41 (minimum version 1.12)
+  ```
+
+
 </details>
 
 <details><summary> <strong>Jupyterの操作</strong></summary>
