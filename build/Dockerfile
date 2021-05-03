@@ -17,12 +17,17 @@ USER root
 RUN echo ${User}
 RUN cat /etc/lsb-release
 
+# synbolic link to avoid hanging
+ENV TZ=Asia/Tokyo
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # Comment out below RUN If not use Proxy
 RUN echo 'Acquire::http::Proxy "http://proxy.uec.ac.jp:8080";' >> /etc/apt/apt.conf\
     && echo 'Acquire::https::Proxy "http://proxy.uec.ac.jp:8080";' >> /etc/apt/apt.conf
 
 
 RUN apt-get update && apt-get install -y && apt-get upgrade -y
+RUN apt install -y tzdata software-properties-common
 RUN useradd -m ${User}
 RUN apt-get install -y apt-utils build-essential git bash-completion gnupg2 curl apt-transport-https nano tree bzip2-doc libncurses-dev libbz2-dev libreadline-dev libsqlite3-dev libssl-dev zlib1g-dev wget llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev sudo 
 RUN gpasswd -a ${User} sudo
