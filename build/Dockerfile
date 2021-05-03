@@ -39,6 +39,9 @@ RUN echo 'export JUPYTER_PORT=${JUPYTER_PORT}' >> /root/.bashrc
 RUN echo 'export JUPYTER_PASSWD=${JUPYTER_PASSWD}' >> /root/.bashrc
 RUN echo 'export JUPYTER_PORT=${JUPYTER_PORT}' >> /home/${User}/.bashrc
 RUN echo 'export JUPYTER_PASSWD=${JUPYTER_PASSWD}' >> /home/${User}/.bashrc
+RUN echo 'export PATH=/home/${User}/.local/bin:$PATH' >> /home/mine/.bashrc
+
+ENV PATH /home/${User}/.local/bin:$PATH
 # Jupyter Config
 USER ${User}
 RUN pip install jupyter
